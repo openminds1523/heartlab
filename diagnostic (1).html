@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vapi SDK Diagnostic</title>
+    <style>
+        body {
+            background: #0B0F19;
+            color: #E2E8F0;
+            font-family: 'Courier New', monospace;
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #BDB2FF;
+        }
+        .section {
+            background: #161D2C;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #ff7043;
+        }
+        .loading {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+        code {
+            background: #0B0F19;
+            padding: 10px;
+            border-radius: 4px;
+            display: block;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        button {
+            background: #BDB2FF;
+            color: #0B0F19;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Vapi SDK Diagnostic Tool</h1>
+    
+    <div class="section">
+        <h2>Step 1: Check Global Variables</h2>
+        <div id="status1" class="status loading">⏳ Checking before SDK load...</div>
+        <code id="before">Waiting...</code>
+    </div>
+    
+    <div class="section">
+        <h2>Step 2: Load SDK</h2>
+        <div id="status2" class="status loading">⏳ Loading SDK from CDN...</div>
+        <button onclick="loadSDK()">🔄 Manually Load SDK</button>
+    </div>
+    
+    <div class="section">
+        <h2>Step 3: Check After Load</h2>
+        <div id="status3" class="status loading">⏳ Waiting for SDK to load...</div>
+        <code id="after">Waiting...</code>
+    </div>
+
+    <div class="section">
+        <h2>Available Global Variables</h2>
+        <code id="globals">Waiting...</code>
+    </div>
+
+    <script>
+        // Log initial state
+        function getGlobalVars() {
+            const vars = [];
+            for (let key in window) {
+                if (!key.startsWith('webkit') && !key.startsWith('chrome') && key !== 'window') {
+                    try {
+                        if (typeof window[key] === 'object' || typeof window[key] === 'function') {
+                            vars.push(key);
+                        }
+                    } catch(e) {}
+                }
+            }
+            return vars.sort();
+        }
+
+        const beforeLoad = getGlobalVars();
+        document.getElementById('before').textContent = beforeLoad.slice(0, 20).join('\n') + '\n... and ' + (beforeLoad.length - 20) + ' more';
+        document.getElementById('status1').innerHTML = '✅ Found ' + beforeLoad.length + ' global variables before SDK load';
+        document.getElementById('status1').className = 'status success';
+
+        // Load SDK
+        function loadSDK() {
+            document.getElementById('status2').innerHTML = '⏳ Loading SDK...';
+            document.getElementById('status2').className = 'status loading';
+
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
+            script.async = true;
+            
+            script.onload = () => {
+                console.log('✅ Script loaded!');
+                document.getElementById('status2').innerHTML = '✅ SDK script loaded from CDN';
+                document.getElementById('status2').className = 'status success';
+                
+                // Check after load
+                setTimeout(checkAfterLoad, 500);
+            };
+            
+            script.onerror = (e) => {
+                console.error('❌ Script failed to load:', e);
+                document.getElementById('status2').innerHTML = '❌ Failed to load SDK: ' + e;
+                document.getElementById('status2').className = 'status error';
+            };
+            
+            document.head.appendChild(script);
+        }
+
+        function checkAfterLoad() {
+            const afterLoad = getGlobalVars();
+            const newVars = afterLoad.filter(v => !beforeLoad.includes(v));
+            
+            document.getElementById('after').textContent = afterLoad.slice(0, 20).join('\n') + '\n... and ' + (afterLoad.length - 20) + ' more';
+            
+            if (newVars.length > 0) {
+                document.getElementById('status3').innerHTML = '✅ Found ' + newVars.length + ' NEW global variables!';
+                document.getElementById('status3').className = 'status success';
+                document.getElementById('globals').textContent = '🆕 NEW VARIABLES:\n' + newVars.join('\n') + '\n\nLooking for: window.vapiSDK\n' + (window.vapiSDK ? '✅ FOUND!' : '❌ NOT FOUND');
+            } else {
+                document.getElementById('status3').innerHTML = '❌ No new variables found';
+                document.getElementById('status3').className = 'status error';
+                document.getElementById('globals').textContent = 'No new global variables created by SDK\n\nChecking specific names:\n' + 
+                    'window.vapiSDK: ' + (window.vapiSDK ? '✅' : '❌') + '\n' +
+                    'window.Vapi: ' + (window.Vapi ? '✅' : '❌') + '\n' +
+                    'window.vapi: ' + (window.vapi ? '✅' : '❌') + '\n' +
+                    'window.VAPI: ' + (window.VAPI ? '✅' : '❌');
+            }
+        }
+
+        // Auto-load on page load
+        window.addEventListener('load', () => {
+            console.log('Page loaded, attempting to auto-load SDK...');
+            loadSDK();
+        });
+    </script>
+</body>
+</html>
