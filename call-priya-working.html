@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartlab - Call Priya</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a2f2d 0%, #2a4a48 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 40px;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .heart-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #d4af37, #f0e68c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #d4af37;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #a8d5d5;
+            margin-bottom: 30px;
+        }
+        
+        .session-info {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .session-info h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #d4af37;
+        }
+        
+        .session-details {
+            font-size: 14px;
+            color: #a8d5d5;
+            line-height: 1.8;
+        }
+        
+        .call-button {
+            background: linear-gradient(135deg, #d4af37, #f0e68c);
+            color: #1a2f2d;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        .call-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .call-button:active {
+            transform: translateY(0);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 14px;
+            color: #a8d5d5;
+            text-align: left;
+            line-height: 1.8;
+        }
+        
+        .instructions h3 {
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="heart-logo">💚</div>
+            <h1>Heartlab</h1>
+            <p class="subtitle">Say It Loud</p>
+        </div>
+        
+        <div class="session-info">
+            <h2>Your Session: Priya</h2>
+            <div class="session-details">
+                <p>⏱️ <strong>15 minutes</strong> of listening, judgment-free</p>
+                <p>🔒 Completely private & anonymous</p>
+                <p>💬 Say anything weighing on your heart</p>
+            </div>
+        </div>
+        
+        <button class="call-button" onclick="startCall()">
+            📞 Start Call with Priya
+        </button>
+        
+        <div class="instructions">
+            <h3>What to expect:</h3>
+            <ol>
+                <li>Click the button above to begin</li>
+                <li>Allow microphone & speaker access</li>
+                <li>Priya will greet you — start speaking</li>
+                <li>Your session ends automatically after 15 minutes</li>
+                <li>Everything stays private</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- VAPI EMBED CODE -->
+    <script
+      src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"
+      defer
+      async
+    ></script>
+    <script>
+      window.addEventListener("load", () => {
+        window.vapiSDK.run({
+          apiKey: "34352a76-aeac-4bdc-9c17-f009ae46c740",
+          assistant: "abc3d5fa-49c3-43c0-ae8a-7a0a2480b4fe",
+          config: {
+            position: "bottom-right"
+          }
+        });
+      });
+      
+      function startCall() {
+        // Trigger Vapi call
+        if (window.vapiSDK) {
+          window.vapiSDK.start();
+        }
+      }
+    </script>
+</body>
+</html>
